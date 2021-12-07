@@ -6,10 +6,11 @@ import java.util.*;
 
 public class Logic {
     public static List<Integer> createNewList(List<Integer> list){
-        int prevElem = 0;
         List<Integer> newList = new ArrayList<>();
+        int prevElem = list.get(0);
+        newList.add(prevElem);
 
-        for (int elem : list){
+        for (int elem : list.subList(1, list.size())){
             if (elem != prevElem){
                 newList.add(elem);
             }
