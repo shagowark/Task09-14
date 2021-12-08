@@ -23,7 +23,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="fbea7" class="javax.swing.JTextField" binding="textFieldInput" default-binding="true">
+              <component id="d4c0b" class="javax.swing.JTable" binding="tableInput">
                 <constraints/>
                 <properties/>
               </component>
@@ -49,7 +49,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="e3ccf" class="javax.swing.JTextField" binding="textFieldOutput" default-binding="true">
+              <component id="c390" class="javax.swing.JTable" binding="tableOutput">
                 <constraints/>
                 <properties/>
               </component>

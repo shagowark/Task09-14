@@ -1,8 +1,11 @@
 package LogicModule;
 
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.*;
+
 
 public class Logic {
     public static List<Integer> createNewList(List<Integer> list){
@@ -20,9 +23,27 @@ public class Logic {
         return newList;
     }
 
+    public static int[] listIntoArr(List<Integer> list){
+        int[] arr = new int[list.size()];
+
+        for (int i = 0; i < list.size(); i++){
+            arr[i] = list.get(i);
+        }
+        return arr;
+    }
+
+    public static List<Integer> arrIntoList(int[] arr){
+        List<Integer> list = new ArrayList<>();
+
+        for (int elem : arr){
+            list.add(elem);
+        }
+        return list;
+    }
+
     public static void saveOutputIntoFile(String fileName, List<Integer> result) throws FileNotFoundException {
         try (PrintWriter out = new PrintWriter(fileName)) {
-            out.println(Arrays.toString(new List[]{result}));
+            out.println(Arrays.toString(Logic.listIntoArr(result)));
         }
     }
 

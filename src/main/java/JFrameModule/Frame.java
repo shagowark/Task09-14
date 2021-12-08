@@ -2,32 +2,37 @@ package JFrameModule;
 
 import LogicModule.Logic;
 import Utils.ArrayUtils;
-import Utils.SwingUtils;
+import Utils.JTableUtils;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Frame extends JFrame{
 
     private JPanel panelMain;
-    private JTextField textFieldInput;
     private JButton loadInputFromFileButton;
     private JButton getSolutionButton;
     private JButton saveOutputIntoFile;
-    private JTextField textFieldOutput;
+    private JTable tableInput;
+    private JTable tableOutput;
 
     private final JFileChooser fileChooserOpen;
     private final JFileChooser fileChooserSave;
 
     public Frame() {
-        this.setTitle("Task8_22");
+        this.setTitle("Task9(14)");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setContentPane(panelMain);
         this.pack();
+
+        JTableUtils.initJTableForArray(tableInput, 40, true, true, false, true);
+        JTableUtils.resizeJTable(tableInput, 0,0, 30, 30);
+
+        JTableUtils.initJTableForArray(tableOutput, 40, true, true, false, false);
+        JTableUtils.resizeJTable(tableOutput, 0,0, 30, 30);
 
         fileChooserOpen = new JFileChooser();
         fileChooserSave = new JFileChooser();
@@ -42,7 +47,7 @@ public class Frame extends JFrame{
         fileChooserSave.setApproveButtonText("Save");
 
         this.setVisible(true);
-        this.setSize(340, 250);
+        this.setSize(340, 350);
 
         loadInputFromFileButton.addActionListener(e -> {
             try {
@@ -50,57 +55,48 @@ public class Frame extends JFrame{
                     int[] arr = ArrayUtils.readIntArrayFromFile(fileChooserOpen.getSelectedFile().getPath());
                     Logic.checkIfArrayIsNull(arr);
                     Logic.checkIfArrayIsEmpty(arr);
-                    StringBuilder sb = new StringBuilder();
-                    for (int elem : arr){
-                        sb.append(elem);
-                        sb.append(' ');
-                    }
-                    textFieldInput.setText(new String(sb).trim());
+                    JTableUtils.writeArrayToJTable(tableInput, arr);
                 }
             } catch (Exception ex) {
-                SwingUtils.showErrorMessageBox("Ошибка при попытке получить данные из input файла", ex);
+                displayError("Пустой input файл");
             }
         });
 
         getSolutionButton.addActionListener(e -> {
             try {
-                String str = textFieldInput.getText();
-                List<Integer> list = new ArrayList<>();
-                String[] strArr = str.split(" ");
-                for (String elem : strArr) {
-                    list.add(Integer.parseInt(elem));
-                }
-                StringBuilder sb = new StringBuilder();
-                for (int elem : Logic.createNewList(list)) {
-                    sb.append(elem);
-                    sb.append(' ');
-                }
-                textFieldOutput.setText(new String(sb).trim());
+                int[] arr = JTableUtils.readIntArrayFromJTable(tableInput);
+                Logic.checkIfArrayIsNull(arr);
+                Logic.checkIfArrayIsEmpty(arr);
+                List<Integer> list = Logic.arrIntoList(arr);
+                arr = Logic.listIntoArr(Logic.createNewList(list));
+                JTableUtils.writeArrayToJTable(tableOutput, arr);
             }
             catch (Exception ex){
-                SwingUtils.showErrorMessageBox("Исходные числа должны иметь вид \"1 2 3 4\" (разделяться пробелами)", ex);
+                displayError("Ошибка в исходных данных");
             }
         });
 
         saveOutputIntoFile.addActionListener(e -> {
             try {
                 if (fileChooserSave.showSaveDialog(panelMain) == JFileChooser.APPROVE_OPTION) {
-                    String str = textFieldOutput.getText();
-                    List<Integer> res = new ArrayList<>();
-                    String[] strArr = str.split(" ");
-                    for (String elem : strArr){
-                        res.add(Integer.parseInt(elem));
-                    }
+                    int[] res = JTableUtils.readIntArrayFromJTable(tableOutput);
+                    Logic.checkIfArrayIsNull(res);
+                    Logic.checkIfArrayIsEmpty(res);
                     String file = fileChooserSave.getSelectedFile().getPath();
                     if (!file.toLowerCase().endsWith(".txt")) {
                         file += ".txt";
                     }
-                    Logic.saveOutputIntoFile(file, res);
+                    Logic.saveOutputIntoFile(file, Logic.arrIntoList(res));
                 }
             } catch (Exception ex) {
-                SwingUtils.showErrorMessageBox("Ошибка при попытке сохранить файл", ex);
+               displayError("Ошибка при попытке сохранить файл");
             }
         });
+    }
+
+    private void displayError(String errorText) {
+        JOptionPane.showMessageDialog(this, errorText,
+                "Ошибка", JOptionPane.ERROR_MESSAGE);
     }
 }
 

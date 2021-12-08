@@ -671,7 +671,7 @@ public class JTableUtils {
      */
     public static int[] readIntArrayFromJTable(JTable table) throws ParseException {
         try {
-            return Utils.ArrayUtils.toPrimitive(readArrayFromJTable(table, Integer.class, Integer::parseInt, false, 0));
+            return Utils.ArrayUtils.toPrimitive(readArrayFromJTable(table, Integer.class, Integer::parseInt, true, 0));
         } catch (JTableUtilsException impossible) {
         }
         return null;
